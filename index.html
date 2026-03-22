@@ -1,0 +1,627 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta
+    name="description"
+    content="OluScan is a front-end beauty-care prototype for quickly checking skincare product suitability through ingredients and a simple skin profile."
+  >
+  <title>OluScan | Beauty-Care Product Checker</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@500;700;800&family=Inter:wght@400;500;600;700&display=swap"
+    rel="stylesheet"
+  >
+  <link rel="stylesheet" href="style.css">
+  <link rel="shortcut icon" href="assets/web_logo.png" type="image/png">
+</head>
+<body>
+  <header class="site-header">
+    <div class="container header-inner">
+      <a class="brand" href="#home" aria-label="OluScan home">
+        <img class="brand-logo" src="assets/web_logo.png" alt="OluScan logo">
+        <span class="brand-text">
+          <span>Beauty-care product checker</span>
+        </span>
+      </a>
+
+      <nav class="top-nav" id="topNav" aria-label="Primary navigation">
+        <a href="#dashboard">Functions</a>
+        <a href="#card-details">Details</a>
+      </nav>
+
+      <div class="language-switch" id="languageSwitch" aria-label="Language selector">
+        <button class="language-switch-button is-active" type="button" data-lang="en">EN</button>
+        <button class="language-switch-button" type="button" data-lang="vi">VI</button>
+      </div>
+
+      <button class="menu-toggle" id="menuToggle" type="button" aria-expanded="false" aria-controls="topNav">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+  </header>
+
+  <main id="home">
+    <section class="hero">
+      <div class="container hero-layout">
+        <div class="hero-copy">
+          <p class="eyebrow">A Beauty-Tech Tool for Fast and Informed Skincare Decisions</p>
+          <h1><span class="hero-brown">Understand a skincare product in seconds -</span> <span class="hero-highlight">before you decide to use</span></h1>
+          <p class="hero-text">
+            Skincare ingredient lists are often difficult to understand, especially when users need to make quick decisions while shopping or visiting a salon. OluScan makes this easier by letting users scan or review ingredients and receive an instant, easy-to-read evaluation, so they can choose products more confidently.
+          </p>
+        </div>
+
+        <div class="hero-mascot-slot" aria-hidden="true">
+          <video class="hero-mascot-media" muted loop playsinline preload="none">
+            <source src="assets/dung logo.webm" type="video/webm">
+          </video>
+        </div>
+
+        <aside class="hero-note" aria-label="OluScan summary">
+          <p class="hero-note-label">Designed for</p>
+          <ul class="hero-note-list">
+            <li>Everyday skincare users</li>
+            <li>Beauty shoppers</li>
+            <li>Anyone who wants a quick and reliable way to understand product ingredients before purchasing</li>
+            <li>Carefully select skincare gifts</li>
+          </ul>
+          <span>Friendly and readable flow.</span>
+        </aside>
+      </div>
+    </section>
+
+    <section class="dashboard-section" id="dashboard">
+      <div class="container">
+        <div class="card-grid card-grid-home">
+          <div class="dashboard-hero-slot" aria-label="OluScan intro overview">
+            <div class="hero-layout dashboard-hero-layout">
+              <div class="hero-copy">
+                <p class="eyebrow">A Beauty-Tech Tool for Fast and Informed Skincare Decisions</p>
+                <h1><span class="hero-brown">Understand a skincare product in seconds -</span> <span class="hero-highlight">before you decide to use</span></h1>
+                <p class="hero-text">
+                  Skincare ingredient lists are often difficult to understand, especially when users need to make quick decisions while shopping or visiting a salon. OluScan makes this easier by letting users scan or review ingredients and receive an instant, easy-to-read evaluation, so they can choose products more confidently.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <aside class="hero-note dashboard-note-slot" aria-label="OluScan summary">
+            <p class="hero-note-label">Designed for</p>
+            <ul class="hero-note-list">
+              <li>Everyday skincare users</li>
+              <li>Beauty shoppers</li>
+              <li>Anyone who wants a quick and reliable way to understand product ingredients before purchasing</li>
+              <li>Carefully select skincare gifts</li>
+            </ul>
+            <span>Friendly and readable flow.</span>
+          </aside>
+
+          <div class="dashboard-mascot-slot" aria-hidden="true">
+            <video class="dashboard-mascot-media" muted loop playsinline preload="none">
+              <source src="assets/dung logo.webm" type="video/webm">
+            </video>
+          </div>
+
+          <article class="feature-card feature-card-main accent-forest card-home-profile" role="button" tabindex="0" data-panel="profile">
+            <div class="led-border" aria-hidden="true"></div>
+            <div class="card-floral card-floral-profile" aria-hidden="true">
+              <span class="card-floral-base"></span>
+              <span class="card-floral-secondary"></span>
+              <span class="card-floral-glow"></span>
+              <span class="card-floral-haze"></span>
+            </div>
+            <span class="feature-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" class="feature-icon-svg feature-icon-profile" focusable="false" aria-hidden="true">
+                <path d="M7 4.8h7.2l3 3V18a2 2 0 0 1-2 2H7A2 2 0 0 1 5 18V6.8a2 2 0 0 1 2-2Z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M14.2 4.8v3h3" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M9 11h5.5M9 14h5.5M9 17h3.5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+              </svg>
+            </span>
+            <h3>Skin Profile</h3>
+            <p>Store your skin type, sensitivity, and current skin conditions to support more accurate product evaluation and personalized results over time.</p>
+            <div class="mini-tags">
+              <span>Dry</span>
+              <span>Sensitive</span>
+              <span>Barrier Support</span>
+            </div>
+          </article>
+
+          <article class="feature-card feature-card-tall accent-rose card-home-scan" role="button" tabindex="0" data-panel="quick-check">
+            <div class="card-floral card-floral-scan" aria-hidden="true">
+              <span class="card-floral-base"></span>
+              <span class="card-floral-secondary"></span>
+              <span class="card-floral-glow"></span>
+              <span class="card-floral-haze"></span>
+            </div>
+            <span class="feature-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" class="feature-icon-svg feature-icon-scan" focusable="false" aria-hidden="true">
+                <path d="M8 4H6a2 2 0 0 0-2 2v2" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M16 4h2a2 2 0 0 1 2 2v2" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M20 16v2a2 2 0 0 1-2 2h-2" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M4 16v2a2 2 0 0 0 2 2h2" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M8.5 12a3.5 3.5 0 1 0 7 0a3.5 3.5 0 1 0-7 0Z" fill="none" stroke="currentColor" stroke-width="1.8"/>
+                <path d="M17.5 17.5 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+              </svg>
+            </span>
+            <h3>Scan or Enter Product</h3>
+            <p>Use your phone camera to scan product ingredients instantly, or enter them manually when scanning is not available. This helps you quickly access product information and start evaluating it right away.</p>
+            <div class="card-stat">
+              <strong>Instant Product Check</strong>
+              <span>Scan or type ingredients and get results in seconds.</span>
+            </div>
+          </article>
+
+          <article class="feature-card accent-blush feature-card-collapsible-desktop is-collapsed card-home-assistant" role="button" tabindex="0" data-panel="assistant" data-collapsible-desktop>
+            <div class="card-floral card-floral-assistant" aria-hidden="true">
+              <span class="card-floral-base"></span>
+              <span class="card-floral-secondary"></span>
+              <span class="card-floral-glow"></span>
+              <span class="card-floral-haze"></span>
+            </div>
+            <div class="feature-card-header-row">
+              <div class="feature-card-header-main">
+                <span class="feature-icon" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" class="feature-icon-svg feature-icon-assistant" focusable="false" aria-hidden="true">
+                    <path d="M6 7.5A3.5 3.5 0 0 1 9.5 4h5A3.5 3.5 0 0 1 18 7.5v4A3.5 3.5 0 0 1 14.5 15H11l-3.5 3v-3A3.5 3.5 0 0 1 4 11.5v-4A3.5 3.5 0 0 1 6 7.5Z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M9 9.5h6M9 12h3.5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+                  </svg>
+                </span>
+                <h3>OluScan Assistant</h3>
+              </div>
+              <button class="feature-card-toggle" type="button" aria-expanded="false" aria-controls="card-collapse-assistant" aria-label="Expand OluScan Assistant card">
+                <span class="feature-card-toggle-icon" aria-hidden="true"></span>
+              </button>
+            </div>
+            <div class="feature-card-collapsible-content" id="card-collapse-assistant">
+              <p>Ask questions and receive clear, easy-to-understand explanations about ingredients, product suitability, and skincare concerns. Designed to reduce confusion and support better decisions.</p>
+            </div>
+          </article>
+
+          <article class="feature-card feature-card-stamp accent-clay feature-card-collapsible-desktop is-collapsed card-home-how" role="button" tabindex="0" data-panel="ux-logic" data-collapsible-desktop>
+            <div class="card-floral card-floral-layout" aria-hidden="true">
+              <span class="card-floral-base"></span>
+              <span class="card-floral-secondary"></span>
+              <span class="card-floral-glow"></span>
+              <span class="card-floral-haze"></span>
+            </div>
+            <div class="feature-card-header-row">
+              <div class="feature-card-header-main">
+                <span class="feature-icon" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" class="feature-icon-svg feature-icon-layout" focusable="false" aria-hidden="true">
+                    <rect x="4" y="5" width="7" height="6" rx="1.5" fill="none" stroke="currentColor" stroke-width="1.8"/>
+                    <rect x="13" y="5" width="7" height="14" rx="1.5" fill="none" stroke="currentColor" stroke-width="1.8"/>
+                    <rect x="4" y="13" width="7" height="6" rx="1.5" fill="none" stroke="currentColor" stroke-width="1.8"/>
+                  </svg>
+                </span>
+                <h3>UX and Layout Explanation</h3>
+              </div>
+              <button class="feature-card-toggle" type="button" aria-expanded="false" aria-controls="card-collapse-ux" aria-label="Expand UX and Layout Explanation card">
+                <span class="feature-card-toggle-icon" aria-hidden="true"></span>
+              </button>
+            </div>
+            <div class="feature-card-collapsible-content" id="card-collapse-ux">
+              <p>Learn how the interface is designed to be simple, clear, and easy to use. This section explains the layout, user flow, and design decisions that help users interact quickly and confidently.</p>
+              <div class="stamp-lines">
+                <span>Flow</span>
+                <span>Layout</span>
+                <span>Usability</span>
+              </div>
+            </div>
+          </article>
+
+          <article class="feature-card accent-soft feature-card-collapsible-desktop is-collapsed card-home-results" role="button" tabindex="0" data-panel="results" data-collapsible-desktop>
+            <div class="card-floral card-floral-results" aria-hidden="true">
+              <span class="card-floral-base"></span>
+              <span class="card-floral-secondary"></span>
+              <span class="card-floral-glow"></span>
+              <span class="card-floral-haze"></span>
+            </div>
+            <div class="feature-card-header-row">
+              <div class="feature-card-header-main">
+                <span class="feature-icon" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" class="feature-icon-svg feature-icon-results" focusable="false" aria-hidden="true">
+                    <path d="M7 18V10M12 18V6M17 18v-4" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+                    <path d="M5 18.5h14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+                    <path d="m15.5 9.5 1.8 1.8 3.2-3.3" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                </span>
+                <h3>Analysis Results</h3>
+              </div>
+              <button class="feature-card-toggle" type="button" aria-expanded="false" aria-controls="card-collapse-results" aria-label="Expand Analysis Results card">
+                <span class="feature-card-toggle-icon" aria-hidden="true"></span>
+              </button>
+            </div>
+            <div class="feature-card-collapsible-content" id="card-collapse-results">
+              <p>View a clear breakdown of the product, including how suitable it is for your skin, key ingredient insights, and any potential concerns, all presented in a simple and easy-to-read format.</p>
+              <div class="card-big-text">View Results</div>
+            </div>
+          </article>
+
+        </div>
+      </div>
+    </section>
+
+    <section class="detail-stage" id="card-details">
+      <div class="container">
+        <article class="detail-panel" id="panel-quick-check" data-panel-content="quick-check" aria-live="polite">
+          <div class="detail-head">
+            <p class="eyebrow">Quick product check</p>
+            <h2>Enter product details in one clear card</h2>
+          </div>
+
+          <div class="split-layout">
+            <section class="panel panel-form">
+              <div class="scanner-box">
+                <div class="scanner-head">
+                  <div>
+                    <p class="eyebrow">Mobile and tablet scan</p>
+                    <h3>Use your device camera</h3>
+                  </div>
+                  <span class="badge badge-neutral" id="cameraStatus">Camera idle</span>
+                </div>
+
+                <div class="scanner-preview" id="scannerPreview">
+                  <video id="scannerVideo" class="scanner-video" autoplay playsinline muted></video>
+                  <img id="scannerImagePreview" class="scanner-image-preview" alt="Captured product label preview">
+                  <div class="scanner-placeholder" id="scannerPlaceholder">
+                    Open the camera on a phone or tablet to scan a product label or ingredient list.
+                  </div>
+                </div>
+
+                <div class="scanner-actions">
+                  <button class="button button-secondary" type="button" id="startCameraButton">Open Camera</button>
+                  <button class="button button-secondary" type="button" id="stopCameraButton">Stop Camera</button>
+                  <button class="button button-secondary scanner-photo-action" type="button" id="capturePhotoButton">Take Photo</button>
+                  <button class="button button-secondary scanner-photo-action" type="button" id="uploadPhotoButton">Choose Photo</button>
+                </div>
+                <div class="scanner-ocr-output" id="scannerOcrOutput" hidden>
+                  <label for="scannerExtractedText">Scanned ingredient text</label>
+                  <textarea id="scannerExtractedText" rows="4" readonly></textarea>
+                  <div class="scanner-ocr-actions">
+                    <button class="button button-primary" type="button" id="useScannedTextButton">Use for Analysis</button>
+                  </div>
+                </div>
+                <input id="scanImageInput" type="file" accept="image/*" capture="environment" hidden>
+              </div>
+
+              <form id="productForm" class="check-form">
+                <label for="quickProfileSelect">Skin profile for this check</label>
+                <select id="quickProfileSelect" name="quickProfileSelect">
+                  <option value="current-form">Use current profile form</option>
+                </select>
+
+                <label for="productName">Product name</label>
+                <input id="productName" name="productName" type="text" placeholder="Example: Daily Calm Toner" required>
+
+                <label for="ingredients">Ingredients</label>
+                <textarea
+                  id="ingredients"
+                  name="ingredients"
+                  rows="5"
+                  placeholder="Example: Water, Glycerin, Niacinamide, Fragrance"
+                  required
+                ></textarea>
+
+                <label for="productType">Product type</label>
+                <select id="productType" name="productType">
+                  <option value="serum">Serum</option>
+                  <option value="toner">Toner</option>
+                  <option value="cleanser">Cleanser</option>
+                  <option value="moisturizer">Moisturizer</option>
+                  <option value="mask">Mask</option>
+                  <option value="pharmaceuticals">Pharmaceuticals</option>
+                  <option value="sunscreen">Sunscreen</option>
+                </select>
+
+                <div class="form-actions">
+                  <button class="button button-primary" type="submit">Analyze Product</button>
+                  <button class="button button-secondary" type="button" id="sampleButton">Load Sample Data</button>
+                </div>
+              </form>
+            </section>
+
+            <aside class="panel panel-side">
+              <p class="eyebrow">Quick tip</p>
+              <h3>Made for low-stress use</h3>
+              <p class="result-copy">Users only need the product name, ingredients, and type to get a fast prototype result.</p>
+            </aside>
+          </div>
+        </article>
+
+        <article class="detail-panel is-active" id="panel-profile" data-panel-content="profile">
+          <div class="detail-head">
+            <p class="eyebrow">Skin profile</p>
+            <h2>Save and manage customer skin profiles</h2>
+          </div>
+
+          <div class="split-layout">
+            <section class="panel">
+              <div class="account-summary">
+                <div>
+                  <p class="eyebrow">User Account</p>
+                  <h3>Customer profile storage</h3>
+                </div>
+                <span class="badge badge-safe" id="cloudStatus">Cloud sync ready</span>
+              </div>
+
+              <form id="profileForm" class="profile-form">
+                <label for="profileName">Profile name</label>
+                <input id="profileName" name="profileName" type="text" placeholder="Example: Anna - Dry Skin">
+
+                <fieldset>
+                  <legend>Skin type</legend>
+                  <div class="choice-chips">
+                    <label><input type="checkbox" name="skinType" value="dry" checked><span>Dry</span></label>
+                    <label><input type="checkbox" name="skinType" value="oily"><span>Oily</span></label>
+                    <label><input type="checkbox" name="skinType" value="combination"><span>Combination</span></label>
+                    <label><input type="checkbox" name="skinType" value="sensitive"><span>Sensitive</span></label>
+                    <label><input type="checkbox" name="skinType" value="normal"><span>Normal</span></label>
+                  </div>
+                </fieldset>
+
+                <fieldset>
+                  <legend>Focus concerns</legend>
+                  <div class="toggle-list">
+                    <label><input type="checkbox" name="concern" value="acne"> Acne-prone</label>
+                    <label><input type="checkbox" name="concern" value="redness"> Redness</label>
+                    <label><input type="checkbox" name="concern" value="fragrance"> Fragrance sensitivity</label>
+                    <label><input type="checkbox" name="concern" value="barrier"> Weak skin barrier</label>
+                    <label><input type="checkbox" name="concern" value="dehydration"> Dehydration</label>
+                  </div>
+                </fieldset>
+
+                <label for="conditionNote">Current skin condition</label>
+                <textarea
+                  id="conditionNote"
+                  name="conditionNote"
+                  rows="4"
+                  placeholder="Example: Skin feels more sensitive this week after trying a new toner."
+                ></textarea>
+
+                <div class="form-actions">
+                  <button class="button button-primary" type="button" id="saveProfileButton">Save New Profile</button>
+                  <button class="button button-secondary" type="button" id="updateProfileButton">Update Selected Profile</button>
+                </div>
+              </form>
+            </section>
+
+            <aside class="panel">
+              <div class="profile-summary" id="profileSummary" aria-live="polite">
+                <h3>Current profile</h3>
+                <p>Dry skin with no added concerns selected yet.</p>
+              </div>
+
+              <div class="profile-summary-actions">
+                <button class="button button-secondary" type="button" id="deleteProfileButton">Delete Selected Profile</button>
+              </div>
+
+              <div class="saved-profiles">
+                <div class="saved-profiles-head">
+                  <h3>Saved profiles</h3>
+                  <p>More than one profile can be stored for the same user account.</p>
+                </div>
+                <div class="saved-profile-list" id="savedProfileList">
+                  <p class="history-empty">No saved profiles yet.</p>
+                </div>
+              </div>
+            </aside>
+          </div>
+        </article>
+
+        <article class="detail-panel" id="panel-assistant" data-panel-content="assistant">
+          <div class="detail-head">
+            <p class="eyebrow">Assistant panel</p>
+            <h2>Short help for uncertain moments</h2>
+          </div>
+
+          <section class="panel assistant-panel">
+            <div class="assistant-box">
+              <button class="assist-chip active" data-help="patch-test" type="button">When should I patch test?</button>
+              <button class="assist-chip" data-help="fragrance" type="button">What if my skin is sensitive?</button>
+              <button class="assist-chip" data-help="store" type="button">How can I use this in a store?</button>
+
+              <div class="assistant-response" id="assistantResponse">
+                Patch test if a product contains fragrance, strong active ingredients, or if your skin reacts easily. Start with a small area before full use.
+              </div>
+            </div>
+          </section>
+        </article>
+
+        <article class="detail-panel" id="panel-ux-logic" data-panel-content="ux-logic">
+          <div class="detail-head">
+            <p class="eyebrow">UX and layout explanation</p>
+            <h2>Design logic in card form</h2>
+          </div>
+
+          <div class="ux-grid">
+            <article class="ux-card">
+              <h3>1. Clear first choice</h3>
+              <p>The card grid appears early so users immediately see the main actions without reading long instructions or opening menus.</p>
+            </article>
+
+            <article class="ux-card">
+              <h3>2. Short input flow</h3>
+              <p>The form asks only for product name, ingredients, and type. This keeps the experience realistic for users who are busy or in a public place.</p>
+            </article>
+
+            <article class="ux-card">
+              <h3>3. Lightweight profile</h3>
+              <p>The skin profile stays simple so the result feels more personal without becoming hard to use.</p>
+            </article>
+
+            <article class="ux-card">
+              <h3>4. Result hierarchy</h3>
+              <p>The decision appears first, then reasons and the next action, so users understand the outcome quickly.</p>
+            </article>
+
+            <article class="ux-card">
+              <h3>5. Whole-site guidance</h3>
+              <p>The website is organized as one presentation flow: users begin with the homepage card grid, open one function at a time, and then return to the grid when they want to switch tasks.</p>
+            </article>
+
+            <article class="ux-card">
+              <h3>6. Notes for users</h3>
+              <p>Users should start by setting a skin profile, then use Scan or Enter Product for ingredient checking. Large cards, short labels, language switching, camera support, and result cards are designed to reduce hesitation in real-world use.</p>
+            </article>
+
+            <article class="ux-card">
+              <h3>7. Notes for teachers</h3>
+              <p>This prototype includes several advanced UI elements for review: responsive card-grid navigation, saved multi-profile logic, mobile camera access, bilingual switching, animated floral layers, result loading states, and audio feedback for interaction and analysis outcomes.</p>
+            </article>
+
+            <article class="ux-card">
+              <h3>8. Complex UI review points</h3>
+              <p>Teachers can review how the system handles dynamic card resizing, hover animation, floating navigation, responsive mobile controls, and conditional result logic without changing the overall page structure. The goal is to show practical front-end thinking, not only visual styling.</p>
+            </article>
+            </div>
+        </article>
+
+        <article class="detail-panel" id="panel-results" data-panel-content="results">
+          <div class="detail-head">
+            <p class="eyebrow">Analysis result</p>
+            <h2>Readable result cards</h2>
+          </div>
+
+          <div class="results-layout">
+            <div class="result-loading-overlay" id="resultLoadingOverlay" aria-hidden="true">
+              <div class="result-loading-card" role="status" aria-live="polite">
+                <div class="result-loader-scene" aria-hidden="true">
+                  <div class="result-loader-flower">
+                    <span class="result-loader-petal petal-1"></span>
+                    <span class="result-loader-petal petal-2"></span>
+                    <span class="result-loader-petal petal-3"></span>
+                    <span class="result-loader-petal petal-4"></span>
+                    <span class="result-loader-petal petal-5"></span>
+                    <span class="result-loader-petal petal-6"></span>
+                    <span class="result-loader-center"></span>
+                  </div>
+                  <div class="result-loader-magnifier">
+                    <span class="result-loader-lens"></span>
+                    <span class="result-loader-handle"></span>
+                  </div>
+                </div>
+                <p class="eyebrow">Analyzing product</p>
+                <h3>OluScan is checking the ingredient list</h3>
+                <p class="result-copy">Please wait while the prototype reviews known ingredients, profile concerns, and caution signals.</p>
+              </div>
+            </div>
+
+            <article class="result-highlight" id="resultHighlight" aria-live="polite">
+              <div class="led-border result-led-border" aria-hidden="true"></div>
+              <p class="result-label">Suitability</p>
+              <h3>Waiting for a product check</h3>
+              <p class="result-copy">Enter a product above to generate a quick and presentation-ready prototype result.</p>
+              <span class="badge badge-neutral">No result yet</span>
+            </article>
+
+            <div class="result-cards">
+              <article class="result-card">
+                <h3>Why this result?</h3>
+                <ul id="resultReasons">
+                  <li>OluScan checks helpful, caution, and high-risk ingredients.</li>
+                  <li>The result is adjusted using the selected skin profile.</li>
+                  <li>The explanation is written in plain language for non-expert users.</li>
+                </ul>
+              </article>
+
+              <article class="result-card">
+                <h3>Matched ingredients</h3>
+                <div class="ingredient-match-list" id="ingredientMatchList">
+                  <p class="history-empty">Matched ingredient explanations will appear here after analysis.</p>
+                </div>
+              </article>
+
+              <article class="result-card result-card-note">
+                <h3>Note</h3>
+                <p id="resultNote">This prototype gives guidance only and users should patch test or seek expert advice when unsure.</p>
+              </article>
+
+              <article class="result-card">
+                <h3>Recommended action</h3>
+                <p id="resultAction">Run a quick check to see if the product looks suitable, needs caution, or may be better avoided.</p>
+              </article>
+
+              <article class="result-card result-card-wide">
+                <h3>Recent checks</h3>
+                <div class="history-list" id="historyList">
+                  <p class="history-empty">No recent checks yet.</p>
+                </div>
+              </article>
+            </div>
+          </div>
+        </article>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container footer-inner">
+      <div>
+        <strong>OluScan</strong>
+        <p>Front-end university prototype for simple beauty-care product suitability checks.</p>
+      </div>
+      <p>Designed for usability, responsiveness, and presentation clarity.</p>
+    </div>
+  </footer>
+
+  <button class="details-scroll-top-button" id="detailsScrollTopButton" type="button" aria-label="Scroll back to function cards">
+    <span class="details-scroll-top-button-icon" aria-hidden="true">
+      <span></span>
+      <span></span>
+    </span>
+  </button>
+
+  <button class="background-music-toggle" id="backgroundMusicToggle" type="button" aria-pressed="false" aria-label="Turn on background music">
+    <span class="background-music-toggle-icon" aria-hidden="true">
+      <span class="background-music-speaker"></span>
+      <span class="background-music-wave wave-1"></span>
+      <span class="background-music-wave wave-2"></span>
+    </span>
+    <span class="background-music-toggle-text">Sound Off</span>
+  </button>
+
+  <button class="mobile-nav-toggle" id="mobileNavToggle" type="button" aria-expanded="false" aria-label="Open floating navigation menu">
+    <span class="mobile-nav-toggle-lines" aria-hidden="true">
+      <span class="mobile-nav-toggle-line"></span>
+      <span class="mobile-nav-toggle-line"></span>
+      <span class="mobile-nav-toggle-line"></span>
+    </span>
+  </button>
+
+  <div class="mobile-menu-overlay" id="mobileMenuOverlay">
+    <div class="mobile-menu-panel">
+      <h2 class="mobile-menu-title">Functions</h2>
+      <div class="mobile-menu-list" id="mobileMenuList"></div>
+    </div>
+  </div>
+
+  <div class="mobile-section-toolbar" id="mobileSectionToolbar" aria-label="Mobile section navigation">
+    <div class="mobile-section-toolbar-track" id="mobileSectionToolbarTrack"></div>
+  </div>
+
+  <script src="ingredients-library.js"></script>
+  <script src="services/apiConfig.js"></script>
+  <script src="utils/safeFetch.js"></script>
+  <script src="utils/ingredientNormalizer.js"></script>
+  <script src="utils/barcodeParser.js"></script>
+  <script src="data/fallbackIngredients.js"></script>
+  <script src="data/fallbackRules.js"></script>
+  <script src="services/openBeautyFactsService.js"></script>
+  <script src="services/ingredientEnrichmentService.js"></script>
+  <script src="services/openAiIngredientAnalysisService.js"></script>
+
+  <script src="services/productAnalysisService.js"></script>
+  <script src="services/ocrScanService.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>
+
+
+
+
+

@@ -1,0 +1,10 @@
+{
+  "functions": {
+    "api/ocr-scan.js": {
+      "maxDuration": 30
+    },
+    "api/analyze-ingredients.js": {
+      "maxDuration": 30
+    }
+  }
+}
