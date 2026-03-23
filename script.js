@@ -1619,7 +1619,11 @@ function analyzeProduct(formData, profile) {
     reasons,
     matchedIngredients,
     comboTags,
-    profileAllergyConflicts: allergyConflicts
+    profileAllergyConflicts: allergyConflicts,
+    analysisProfile: {
+      profileName: normalizedProfile.profileName || "Untitled profile",
+      conditionNote: normalizedProfile.conditionNote || ""
+    }
   };
 }
 
@@ -1647,6 +1651,31 @@ function mergeMatchedIngredients(baseMatches, enrichedIngredients) {
   });
 
   return merged.slice(0, 8);
+}
+
+function getExternalSummaryStatus(summary) {
+  const score = Math.max(0, Math.min(100, Math.round(Number(summary?.score) || 0)));
+  if (score <= 40 || summary?.suitability === "caution") {
+    return {
+      status: "Should not be used",
+      badgeClass: "badge-danger",
+      badgeText: "Avoid"
+    };
+  }
+
+  if (score <= 70 || summary?.suitability === "mixed") {
+    return {
+      status: "Use with care",
+      badgeClass: "badge-warn",
+      badgeText: "Caution"
+    };
+  }
+
+  return {
+    status: "Looks suitable",
+    badgeClass: "badge-safe",
+    badgeText: "Suitable"
+  };
 }
 
 // Keep the existing UI result model, but allow external data to enrich it safely.
@@ -1703,6 +1732,36 @@ function mergeAnalysisWithExternalData(baseAnalysis, externalContext) {
     }
   }
 
+  const enrichedCount = Array.isArray(externalContext.enrichedIngredients) ? externalContext.enrichedIngredients.length : 0;
+  const shouldPromoteExternalCoverage =
+    !(baseAnalysis.profileAllergyConflicts && baseAnalysis.profileAllergyConflicts.length) &&
+    (baseAnalysis.status === "Not yet able to analyze" || (baseAnalysis.matchedIngredients || []).length < 3) &&
+    enrichedCount >= 3;
+
+  if (shouldPromoteExternalCoverage) {
+    const promotedStatus = getExternalSummaryStatus(externalContext.summary);
+    mergedAnalysis.status = promotedStatus.status;
+    mergedAnalysis.badgeClass = promotedStatus.badgeClass;
+    mergedAnalysis.badgeText = promotedStatus.badgeText;
+    mergedAnalysis.suitabilityScore = Math.max(0, Math.min(100, Math.round(Number(externalContext.summary?.score) || 0)));
+
+    mergedAnalysis.reasons = (mergedAnalysis.reasons || []).filter((reason) => (
+      !reason.startsWith("The formula contains many ingredients that are not yet covered by the current OluScan ingredient library.") &&
+      !reason.startsWith("Several components look highly technical or difficult to classify safely in this front-end prototype.") &&
+      !reason.startsWith("The formula does not contain enough ingredients recognized by the current internal library.") &&
+      !reason.startsWith("A safer response is to avoid overconfident analysis.") &&
+      !reason.startsWith("Some ingredients are still not covered in the current library:")
+    ));
+
+    if (!mergedAnalysis.reasons.some((reason) => reason.includes("AI-assisted ingredient identification expanded coverage"))) {
+      mergedAnalysis.reasons.unshift("AI-assisted ingredient identification expanded coverage for ingredients not handled by the current local library.");
+    }
+
+    if (!mergedAnalysis.noteText.includes("AI-assisted ingredient identification")) {
+      mergedAnalysis.noteText = `${mergedAnalysis.noteText} AI-assisted ingredient identification was used to extend the scanned ingredient analysis.`.trim();
+    }
+  }
+
   return mergedAnalysis;
 }
 
@@ -1733,6 +1792,15 @@ function getIngredientGoogleLink(ingredientName) {
   const visibleName = String(ingredientName || "").trim().replace(/\s+/g, " ");
   const query = encodeURIComponent(`${visibleName} skincare ingredient definition`);
   return `https://www.google.com/search?q=${query}`;
+}
+
+function escapeHtml(value) {
+  return String(value || "")
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;");
 }
 
 function getIngredientLinkHtml(ingredientName, variant = "") {
@@ -1846,6 +1914,21 @@ function getResultScorePresentation(analysis) {
   };
 }
 
+function getResultProfileUsageHtml(analysis) {
+  const usedProfileName = analysis?.analysisProfile?.profileName || "Untitled profile";
+  const usedConditionNote = analysis?.analysisProfile?.conditionNote || "";
+  const profileLabel = currentLanguage === "vi" ? "Ho so da dung" : "Profile used";
+  const noteLabel = currentLanguage === "vi" ? "Tinh trang da da dung" : "Condition note used";
+  const noNoteText = currentLanguage === "vi" ? "Khong co ghi chu" : "No condition note";
+
+  return `
+    <div class="result-profile-usage">
+      <p class="result-profile-line"><strong>${profileLabel}:</strong> ${escapeHtml(usedProfileName)}</p>
+      <p class="result-profile-line"><strong>${noteLabel}:</strong> ${escapeHtml(usedConditionNote || noNoteText)}</p>
+    </div>
+  `;
+}
+
 // Update the result area with a friendly, presentation-ready summary.
 function renderResult(productName, analysis) {
   lastRenderedAnalysis = analysis;
@@ -1891,6 +1974,7 @@ function renderResult(productName, analysis) {
       <span class="result-score ${scoreClass}" title="${scorePresentation.title}">${scorePresentation.value}% ${scorePresentation.suffix}</span>
     </div>
     <p class="result-copy">${resultCopy}</p>
+    ${getResultProfileUsageHtml(analysis)}
     <span class="badge ${analysis.badgeClass}">${translatedBadgeMap[analysis.badgeText] || analysis.badgeText}</span>
   `;
   const resultLedBorder = resultHighlight.querySelector(".led-border");
