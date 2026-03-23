@@ -31,7 +31,7 @@ module.exports = async function handler(req, res) {
             content: [
               {
                 type: "input_text",
-                text: "You help enrich a skincare ingredient-analysis prototype. Return valid JSON only. Be conservative. Never invent ingredients that are not clearly present in the provided ingredient text. Do not replace the app's core classification. Provide additive enrichment only. Allowed effect values: support, neutral, caution, avoid. Allowed comboTags: beneficial_combo_oily, beneficial_combo_sensitive, risky_combo_exfoliation, risky_combo_retinoid_exfoliant, risky_combo_retinoid_fragrance, risky_combo_acid_fragrance, risky_combo_drying, risky_combo_sensitive_trigger."
+                text: "You help enrich a skincare ingredient-analysis prototype. Return valid JSON only. Be conservative. Never invent ingredients that are not clearly present in the provided ingredient text. Do not replace the app's core classification. Provide additive enrichment only. Treat user allergy notes in profile.conditionNote or profile.structuredAllergies as high-priority risk signals: if an ingredient clearly matches an allergy note, mention it in extraReasons, include it in cautionIngredients, and make recommendedAction clearly advise avoiding the product. Allowed effect values: support, neutral, caution, avoid. Allowed comboTags: beneficial_combo_oily, beneficial_combo_sensitive, risky_combo_exfoliation, risky_combo_retinoid_exfoliant, risky_combo_retinoid_fragrance, risky_combo_acid_fragrance, risky_combo_drying, risky_combo_sensitive_trigger."
               }
             ]
           },
