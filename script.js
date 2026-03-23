@@ -50,6 +50,33 @@ const backgroundMusicToggle = document.getElementById("backgroundMusicToggle");
 const desktopCollapsibleCards = document.querySelectorAll(".feature-card[data-collapsible-desktop]");
 const heroMascotMedia = document.querySelector(".hero-mascot-media");
 const dashboardMascotMedia = document.querySelector(".dashboard-mascot-media");
+const profileAllergyAliasGroups = [
+  {
+    label: "vitamin b5",
+    patterns: ["vitamin b5", "panthenol", "dexpanthenol", "pro-vitamin b5", "provitamin b5"]
+  },
+  {
+    label: "vitamin b3",
+    patterns: ["vitamin b3", "niacinamide", "nicotinamide"]
+  },
+  {
+    label: "fragrance",
+    patterns: [
+      "fragrance",
+      "parfum",
+      "perfume",
+      "essential oil",
+      "limonene",
+      "linalool",
+      "citral",
+      "geraniol",
+      "eugenol",
+      "lavender oil",
+      "peppermint oil",
+      "tea tree oil"
+    ]
+  }
+];
 
 function updateHeaderScrollState() {
   if (!siteHeader) {
@@ -909,6 +936,101 @@ function applyLanguage(language) {
 }
 
 // Read the user's lightweight profile so the demo can personalize results.
+function resolveProfileAllergyRule(subject) {
+  const normalizedSubject = normalizeIngredientName(foldVietnameseText(subject));
+  if (!normalizedSubject) {
+    return null;
+  }
+
+  const aliasMatch = profileAllergyAliasGroups.find((group) =>
+    group.patterns.some((pattern) => ingredientTokenMatchesPattern(normalizedSubject, pattern))
+  );
+
+  if (aliasMatch) {
+    return {
+      label: aliasMatch.label,
+      patterns: aliasMatch.patterns.slice()
+    };
+  }
+
+  const libraryEntry = findLibraryIngredient(normalizedSubject);
+  if (libraryEntry) {
+    return {
+      label: libraryEntry.key,
+      patterns: [libraryEntry.key, ...(Array.isArray(libraryEntry.aliases) ? libraryEntry.aliases : [])]
+    };
+  }
+
+  return {
+    label: normalizedSubject,
+    patterns: [normalizedSubject]
+  };
+}
+
+function extractProfileAllergyRules(profile) {
+  const note = String(profile?.conditionNote || "").trim();
+  if (!note) {
+    return [];
+  }
+
+  const allergyMarkerPattern = /(allerg(?:y|ic|ies)|di ung|sensitive to|reacts? to|cannot use|can't use|avoid|khong hop|khong dung duoc|kich ung)/i;
+  if (!allergyMarkerPattern.test(foldVietnameseText(note).toLowerCase())) {
+    return [];
+  }
+
+  const noteSegments = note
+    .split(/\n|,|;|\/|\band\b|\bva\b/gi)
+    .map((segment) => segment.trim())
+    .filter(Boolean);
+
+  const resolvedRules = [];
+  const seen = new Set();
+
+  noteSegments.forEach((segment) => {
+    const foldedSegment = foldVietnameseText(segment).toLowerCase();
+    if (!allergyMarkerPattern.test(foldedSegment)) {
+      return;
+    }
+
+    const subject = foldedSegment
+      .replace(/\b(allerg(?:y|ic|ies)|di ung|sensitive to|reacts? to|cannot use|can't use|avoid|khong hop|khong dung duoc|kich ung)\b/gi, " ")
+      .replace(/\b(to|voi|with|ingredient|ingredients|thanh phan|because|do)\b/gi, " ")
+      .replace(/[^a-z0-9+\-\s()]/gi, " ")
+      .replace(/\s+/g, " ")
+      .trim();
+
+    const resolvedRule = resolveProfileAllergyRule(subject);
+    if (!resolvedRule) {
+      return;
+    }
+
+    const ruleKey = normalizeIngredientName(resolvedRule.label);
+    if (!ruleKey || seen.has(ruleKey)) {
+      return;
+    }
+
+    seen.add(ruleKey);
+    resolvedRules.push(resolvedRule);
+  });
+
+  return resolvedRules;
+}
+
+function withDerivedProfileSignals(profile) {
+  const normalizedProfile = {
+    ...(profile || {}),
+    concerns: Array.isArray(profile?.concerns) ? profile.concerns : [],
+    skinTypes: Array.isArray(profile?.skinTypes) && profile.skinTypes.length ? profile.skinTypes : [profile?.skinType || "dry"],
+    skinType: profile?.skinType || (Array.isArray(profile?.skinTypes) && profile.skinTypes[0]) || "dry",
+    conditionNote: String(profile?.conditionNote || "").trim()
+  };
+
+  return {
+    ...normalizedProfile,
+    structuredAllergies: extractProfileAllergyRules(normalizedProfile)
+  };
+}
+
 function getProfileData() {
   const profileName = profileNameInput.value.trim() || "Untitled profile";
   const skinTypes = Array.from(profileForm.querySelectorAll('input[name="skinType"]:checked')).map((input) => input.value);
@@ -917,7 +1039,7 @@ function getProfileData() {
   const resolvedSkinTypes = skinTypes.length ? skinTypes : ["dry"];
   const skinType = getPrimarySkinType(resolvedSkinTypes);
 
-  return { profileName, skinType, skinTypes: resolvedSkinTypes, concerns, conditionNote };
+  return withDerivedProfileSignals({ profileName, skinType, skinTypes: resolvedSkinTypes, concerns, conditionNote });
 }
 
 function updateProfileSummary() {
@@ -947,7 +1069,7 @@ function getAnalysisProfile() {
   if (quickProfileSelect.value !== "current-form") {
     const selectedSavedProfile = savedProfiles.find((profile) => profile.id === quickProfileSelect.value);
     if (selectedSavedProfile) {
-      return selectedSavedProfile;
+      return withDerivedProfileSignals(selectedSavedProfile);
     }
   }
 
@@ -1244,6 +1366,49 @@ function detectRiskyCombos(ingredientTokens, recognizedIngredients) {
   return comboInsights;
 }
 
+function findProfileAllergyConflicts(ingredientTokens, recognizedIngredients, allergyRules) {
+  if (!Array.isArray(allergyRules) || !allergyRules.length) {
+    return [];
+  }
+
+  return allergyRules
+    .map((rule) => {
+      const matchedIngredients = ingredientTokens.filter((token) =>
+        rule.patterns.some((pattern) => ingredientTokenMatchesPattern(token, pattern))
+      );
+
+      recognizedIngredients.forEach((ingredient) => {
+        const hasMatch = rule.patterns.some((pattern) => {
+          if (ingredientTokenMatchesPattern(ingredient.key, pattern)) {
+            return true;
+          }
+
+          return Array.isArray(ingredient.aliases) && ingredient.aliases.some((alias) => ingredientTokenMatchesPattern(alias, pattern));
+        });
+
+        if (hasMatch) {
+          matchedIngredients.push(ingredient.key);
+        }
+      });
+
+      const uniqueMatches = matchedIngredients.filter(
+        (ingredient, index, list) =>
+          ingredient &&
+          list.findIndex((item) => normalizeIngredientName(item) === normalizeIngredientName(ingredient)) === index
+      );
+
+      if (!uniqueMatches.length) {
+        return null;
+      }
+
+      return {
+        label: rule.label,
+        matchedIngredients: uniqueMatches
+      };
+    })
+    .filter(Boolean);
+}
+
 
 function isComplexIngredientToken(ingredientName) {
   if (ingredientName.length > 22) {
@@ -1257,6 +1422,7 @@ function analyzeProduct(formData, profile) {
   const ingredientTokens = splitIngredientList(formData.ingredients);
   const reasons = [];
   const comboTags = [];
+  const normalizedProfile = withDerivedProfileSignals(profile);
   let status = "Looks suitable";
   let badgeClass = "badge-safe";
   let badgeText = "Suitable";
@@ -1291,6 +1457,12 @@ function analyzeProduct(formData, profile) {
       avoidHits.push(matchedIngredient);
     }
   });
+
+  const allergyConflicts = findProfileAllergyConflicts(
+    ingredientTokens,
+    recognizedIngredients,
+    normalizedProfile.structuredAllergies
+  );
 
   const unknownRatio = ingredientTokens.length ? unknownIngredients.length / ingredientTokens.length : 1;
   const recognizedRatio = ingredientTokens.length ? recognizedIngredients.length / ingredientTokens.length : 0;
@@ -1342,7 +1514,20 @@ function analyzeProduct(formData, profile) {
     noteText = "Warning: This result includes ingredients that OluScan treats as unsafe or too high-risk for normal use.";
   }
 
-  if (profile.concerns.includes("fragrance") && cautionHits.some((item) => item.key === "fragrance")) {
+  if (allergyConflicts.length) {
+    const conflictDetails = allergyConflicts
+      .map((conflict) => `${conflict.label} matched ${conflict.matchedIngredients.join(", ")}`)
+      .join("; ");
+    suitabilityScore -= 48 + Math.max(0, allergyConflicts.length - 1) * 18;
+    reasons.push(`Profile allergy conflict found: ${conflictDetails}.`);
+    status = "Should not be used";
+    badgeClass = "badge-danger";
+    badgeText = "Avoid";
+    actionText = "The current skin-condition note includes an allergy conflict with this formula, so the product should be avoided.";
+    noteText = "Warning: Allergy notes saved in the skin profile take priority over general ingredient benefits.";
+  }
+
+  if (normalizedProfile.concerns.includes("fragrance") && cautionHits.some((item) => item.key === "fragrance")) {
     suitabilityScore -= 12;
     reasons.push("The selected skin profile includes fragrance sensitivity and the product contains fragrance.");
     status = avoidHits.length ? status : "Not ideal for this profile";
@@ -1352,12 +1537,12 @@ function analyzeProduct(formData, profile) {
     noteText = "Warning: Personal skin concerns can change a formula from acceptable to unsuitable for a specific user.";
   }
 
-  if ((profile.skinTypes || [profile.skinType]).includes("sensitive") && cautionHits.length) {
+  if ((normalizedProfile.skinTypes || [normalizedProfile.skinType]).includes("sensitive") && cautionHits.length) {
     suitabilityScore -= 10;
     reasons.push("Sensitive skin type selected, so active or irritation-prone ingredients matter more.");
   }
 
-  if ((profile.skinTypes || [profile.skinType]).includes("normal") && status === "Looks suitable") {
+  if ((normalizedProfile.skinTypes || [normalizedProfile.skinType]).includes("normal") && status === "Looks suitable") {
     if (supportHits.length) {
       suitabilityScore += 5;
       actionText = "This product will help improve your skin.";
@@ -1424,7 +1609,18 @@ function analyzeProduct(formData, profile) {
     }
   }
 
-  return { status, suitabilityScore, badgeClass, badgeText, actionText, noteText, reasons, matchedIngredients, comboTags };
+  return {
+    status,
+    suitabilityScore,
+    badgeClass,
+    badgeText,
+    actionText,
+    noteText,
+    reasons,
+    matchedIngredients,
+    comboTags,
+    profileAllergyConflicts: allergyConflicts
+  };
 }
 
 function mergeMatchedIngredients(baseMatches, enrichedIngredients) {
@@ -1608,6 +1804,48 @@ function renderIngredientMatches(matchedIngredients) {
     .join("");
 }
 
+function getResultScorePresentation(analysis) {
+  const score = Math.max(0, Math.min(100, Math.round(Number(analysis?.suitabilityScore) || 0)));
+
+  if (analysis?.status === "Should not be used" || analysis?.status === "Not ideal for this profile") {
+    return {
+      value: 100 - score,
+      suffix: currentLanguage === "vi" ? "khong phu hop" : "not match",
+      title: currentLanguage === "vi"
+        ? "Ty le thanh phan khong phu hop voi ho so da hien tai"
+        : "Estimated ingredient mismatch with the selected skin profile"
+    };
+  }
+
+  if (analysis?.status === "Use with care") {
+    return {
+      value: score,
+      suffix: currentLanguage === "vi" ? "co the phu hop" : "can match",
+      title: currentLanguage === "vi"
+        ? "Ty le thanh phan co the phu hop neu dung can trong"
+        : "Estimated partial ingredient compatibility with the selected skin profile"
+    };
+  }
+
+  if (analysis?.status === "Looks suitable") {
+    return {
+      value: score,
+      suffix: currentLanguage === "vi" ? "phu hop" : "match",
+      title: currentLanguage === "vi"
+        ? "Ty le thanh phan phu hop voi ho so da hien tai"
+        : "Estimated ingredient compatibility with the selected skin profile"
+    };
+  }
+
+  return {
+    value: score,
+    suffix: currentLanguage === "vi" ? "do ro ket qua" : "clear match",
+    title: currentLanguage === "vi"
+      ? "Muc do ro rang cua ket qua dua tren thanh phan da nhan dien"
+      : "Estimated clarity of the result from the ingredients that could be identified"
+  };
+}
+
 // Update the result area with a friendly, presentation-ready summary.
 function renderResult(productName, analysis) {
   lastRenderedAnalysis = analysis;
@@ -1640,15 +1878,19 @@ function renderResult(productName, analysis) {
         : analysis.suitabilityScore <= 70
           ? "result-score-warn"
           : "result-score-safe";
+  const scorePresentation = getResultScorePresentation(analysis);
+  const resultCopy = analysis.profileAllergyConflicts?.length
+    ? `${productName} has been checked against the ingredient list, selected skin profile, and the allergy note saved in Current skin condition.`
+    : `${productName} has been reviewed using the quick ingredient logic and selected skin profile.`;
 
   resultHighlight.innerHTML = `
     <div class="led-border result-led-border" aria-hidden="true"></div>
     <p class="result-label">${t("suitability")}</p>
     <div class="result-title-row">
       <h3 class="${statusClass}">${translatedStatusMap[analysis.status] || analysis.status}</h3>
-      <span class="result-score ${scoreClass}" title="Based on ingredient compatibility with your skin profile">${analysis.suitabilityScore}% match</span>
+      <span class="result-score ${scoreClass}" title="${scorePresentation.title}">${scorePresentation.value}% ${scorePresentation.suffix}</span>
     </div>
-    <p class="result-copy">${productName} has been reviewed using the quick ingredient logic and selected skin profile.</p>
+    <p class="result-copy">${resultCopy}</p>
     <span class="badge ${analysis.badgeClass}">${translatedBadgeMap[analysis.badgeText] || analysis.badgeText}</span>
   `;
   const resultLedBorder = resultHighlight.querySelector(".led-border");
@@ -3172,28 +3414,3 @@ window.addEventListener("resize", syncMascotPlayback);
     mediaQuery.addListener(renderFloralModule);
   }
 })();
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
